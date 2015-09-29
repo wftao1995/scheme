@@ -1,0 +1,35 @@
+#lang scheme/load
+(load "/home/atao/lisp/mysimply.rkt")
+;;Tic-Tac-Toe
+;;This function returns a "triple" of the board position according to the index
+;(define (find-triples position)
+;  (every substitute-triple '(123 456 789 147 258 369 159 357)))
+(define (find-triples position)
+  (every (lambda (comb)
+           (substitute-triple comb position))
+         '(123 456 789 147 258 369 159 357)))
+;;
+;(define (substitute-triple combination)
+;  (accumulate word (every substitute-letter combination)))
+(define (substitute-triple combination position)
+  (accumulate word
+              (every (lambda (square)
+                            (substitute-letter square position))
+                       combination)))
+;;d
+(define (substitute-letter square position)
+  (if (equal? '_ (item square position))
+      square
+      (item square position)))
+;;
+(define (my-pair? triple me)
+  (and (= (appearances me triple) 2)
+       (= (appearances (opponent me) triple) 0)))
+(define (opponent letter)
+  (if (equal? letter 'x) 'o 'x))
+;;
+(define (i-can-win? triples me)
+  (not (empty?
+        (keep (lambda (triple) (my-pair? triple me))
+              triples))))
+
