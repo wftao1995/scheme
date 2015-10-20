@@ -1,5 +1,5 @@
 #lang scheme/load
-(load "/home/atao/lisp/mysimply.rkt")
+(load "mysimply.rkt")
 ;;Tic-Tac-Toe
 ;;This function returns a "triple" of the board position according to the index
 ;(define (find-triples position)
@@ -16,7 +16,7 @@
               (every (lambda (square)
                             (substitute-letter square position))
                        combination)))
-;;d
+;;
 (define (substitute-letter square position)
   (if (equal? '_ (item square position))
       square
@@ -28,8 +28,41 @@
 (define (opponent letter)
   (if (equal? letter 'x) 'o 'x))
 ;;
+;(define (i-can-win? triples me)
+;  (not (empty?
+;        (keep (lambda (triple) (my-pair? triple me))
+;              triples))))
 (define (i-can-win? triples me)
-  (not (empty?
-        (keep (lambda (triple) (my-pair? triple me))
-              triples))))
+  (choose-win
+   (keep (lambda (triple) (my-pair? triple me))
+         triples)))
+;;Everything other than #f is count as true.
+;;So we can write a prcedure that return the number of a winning move.
+(define (choose-win winning-triples)
+  (if (empty? winning-triples)
+      #f
+      (keep number? (first winning-triples))))
+;;If the oppoent can win in the next move
+(define (opponent-can-win? triples me)
+  (i-can-win? triples (oppoent me)))
+
+;;Now the strategy goes complicated
+(define (i-can-fork? tripes me)
+  (first-if-any (pivots triples me)))
+(define (first-if-any sent)
+  (if (empty? sent)
+      #f
+      (first sent)))
+
+(define (pivots triples me)
+  (repeated-numbers (keep (lambda (triple) (my-single? triple me))
+                          triples)))
+(define (my-single? triple me)
+  (and (= (appearances me triple) 1)
+       (= (appearances (opponent me) triple) 0)))
+
+(define (repeated-numbers sent)
+  (every first
+         (keep (lambda
+;考虑四个角落？
 
