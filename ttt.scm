@@ -63,6 +63,27 @@
 
 (define (repeated-numbers sent)
   (every first
-         (keep (lambda
+         (keep (lambda (wd) (>= (count wd) 2))
+               (sort-digits (accumulate word sent)))))
+
+(define (extract-digit desired-digit wd)
+  (keep (lambda (wd-digit) (equal? wd-digit desired-digit)) wd))
+
+(define (sort-digits number-word)
+  (every (lambda (digit) (extract-digit digit number-word))
+         '(1 2 3 4 5 6 7 8 9)))
+
+
+
+
+
+
+
+(define (ttt-choose triples me)
+  (cond ((i-can-win? triples me))
+        ((opponent-can-win? triples me))
+        ((i-can-fork? triples me))
+        ((i-can-advance? triples me))
+        (else (best-free-square triples))))
 ;考虑四个角落？
 
